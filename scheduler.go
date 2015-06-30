@@ -2,15 +2,13 @@ package singoriensis
 
 import (
 	"container/list"
+	"singoriensis/common"
+	"sync"
 )
-
-type ElementItem struct {
-	UrlStr   string
-	PageType int
-}
 
 type Scheduler struct {
 	elems *list.List
+	mutex *sync.Mutex
 }
 
 type SchedulerError struct{}
@@ -18,23 +16,35 @@ type SchedulerError struct{}
 func NewScheduler() *Scheduler {
 	return &Scheduler{
 		elems: list.New(),
+		mutex: &sync.Mutex{},
 	}
 }
 
-func (self *Scheduler) AddUrl(elem ElementItem) {
-	self.elems.PushBack(elem)
+func (self *Scheduler) GetElemCount() int {
+	return self.elems.Len()
 }
 
-func (self *Scheduler) ShiftUrl() interface{} {
+func (self *Scheduler) AddElementItem(elem common.ElementItem) {
+	self.mutex.Lock()
+	self.elems.PushBack(elem)
+	self.mutex.Unlock()
+}
+
+func (self *Scheduler) ShiftElementItem() interface{} {
+	var elem interface{}
+
+	self.mutex.Lock()
+
 	elemItem := self.elems.Front()
 
 	if elemItem != nil {
-		elem := elemItem.Value.(ElementItem)
+		elem = elemItem.Value.(common.ElementItem)
 		self.elems.Remove(elemItem)
-		return elem
 	}
 
-	return nil
+	self.mutex.Unlock()
+
+	return elem
 }
 
 func (err SchedulerError) Error() string {

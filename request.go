@@ -23,13 +23,13 @@ func NewRequest() *Request {
 	return &Request{}
 }
 
-func (self *Request) Init(method string, urlStr string) *Request {
+func (self Request) Init(method string, urlStr string) *Request {
 	self.method = method
 	self.urlStr = urlStr
-	return self
+	return &self
 }
 
-func (self *Request) Request() (string, error) {
+func (self Request) Request() (string, error) {
 	var err interface{} = nil
 	body := &strings.Reader{}
 

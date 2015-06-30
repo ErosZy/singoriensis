@@ -2,18 +2,26 @@ package singoriensis
 
 import (
 	"fmt"
+	"singoriensis/common"
+	"singoriensis/interfaces"
 	"time"
 )
 
 type Downloader struct {
 	requests  []*Request
-	scheduler *Scheduler
+	scheduler interfaces.SchedulerInterface
 }
 
-func NewDownloader(scheduler *Scheduler) *Downloader {
-	return &Downloader{
-		scheduler: scheduler,
-	}
+func NewDownloader() *Downloader {
+	return &Downloader{}
+}
+
+func (self *Downloader) GetScheduler() interfaces.SchedulerInterface {
+	return self.scheduler
+}
+
+func (self *Downloader) SetScheduler(scheduler interfaces.SchedulerInterface) {
+	self.scheduler = scheduler
 }
 
 func (self *Downloader) Start(threadNum int) {
@@ -30,10 +38,10 @@ func (self *Downloader) Start(threadNum int) {
 			var method string
 
 			for {
-				elem := self.scheduler.ShiftUrl()
+				elem := self.scheduler.ShiftElementItem()
 
 				if elem != nil {
-					elemItem := elem.(ElementItem)
+					elemItem := elem.(common.ElementItem)
 					urlStr = elemItem.UrlStr
 					method = "GET"
 
@@ -44,6 +52,8 @@ func (self *Downloader) Start(threadNum int) {
 					} else {
 						fmt.Println(err.Error())
 					}
+
+					Threads <- index
 
 				} else {
 					time.Sleep(1 * time.Second)

@@ -1,15 +1,23 @@
 package singoriensis
 
+import (
+	"singoriensis/common"
+	"singoriensis/interfaces"
+	"time"
+)
+
 const (
 	HTML_TYPE = iota
 	JSON_TYPE
 )
 
+var Threads chan int
+
 type Spider struct {
 	threadNum  int
 	taskName   string
-	scheduler  *Scheduler
-	downloader *Downloader
+	scheduler  interfaces.SchedulerInterface
+	downloader interfaces.DownloaderInterface
 }
 
 func NewSpider(taskName string, process interface{}) *Spider {
@@ -30,17 +38,18 @@ func (self *Spider) SetThreadNum(num int) *Spider {
 }
 
 func (self *Spider) AddUrl(urlstr string, pageType int) *Spider {
+
 	if self.downloader == nil {
 		panic("downloader instance is nil, please init downloader.")
 	}
 
-	if self.downloader.scheduler == nil {
-		panic("downloader's scheduler is nil, please set schduler.")
+	if self.scheduler == nil {
+		panic("downloader's scheduler is nil, please set scheduler.")
 	}
 
-	elemItem := ElementItem{UrlStr: urlstr, PageType: pageType}
+	elemItem := common.ElementItem{UrlStr: urlstr, PageType: pageType}
 
-	self.downloader.scheduler.AddUrl(elemItem)
+	self.scheduler.AddElementItem(elemItem)
 
 	return self
 }
@@ -49,14 +58,31 @@ func (self *Spider) AddPipeline() *Spider {
 	return self
 }
 
-func (self *Spider) SetDownloader(downloader *Downloader) *Spider {
+func (self *Spider) SetDownloader(downloader interfaces.DownloaderInterface) *Spider {
 	self.downloader = downloader
+	return self
+}
+
+func (self *Spider) SetScheduler(scheduler interfaces.SchedulerInterface) *Spider {
+	self.downloader.SetScheduler(scheduler)
+	self.scheduler = scheduler
 	return self
 }
 
 func (self *Spider) Run() {
 	num := self.threadNum
+	Threads = make(chan int, num)
+
 	self.downloader.Start(num)
 
-	select {}
+End:
+	for {
+		select {
+		case <-Threads:
+		case <-time.After(time.Minute * 10):
+			if count := self.scheduler.GetElemCount(); count == 0 {
+				break End
+			}
+		}
+	}
 }
