@@ -23,10 +23,6 @@ func (self *DefaultDownloaderMiddleware) GetResponse(res *http.Response) {
 	fmt.Println(res)
 }
 
-func (self *DefaultDownloaderMiddleware) GetData(data []byte) {
-	fmt.Println(string(data))
-}
-
 func (self *DefaultDownloaderMiddleware) Error(err error) {
 	fmt.Println(err.Error())
 }
