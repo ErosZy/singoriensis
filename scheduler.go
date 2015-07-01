@@ -54,8 +54,9 @@ func (self *Scheduler) ShiftElementItem() interface{} {
 	if elemItem != nil {
 		elem = elemItem.Value.(common.ElementItem)
 		self.elems.Remove(elemItem)
-		self.CallMiddlewareMethod("ElementItemOut", []interface{}{elem})
 	}
+
+	self.CallMiddlewareMethod("ElementItemOut", []interface{}{elem})
 
 	self.mutex.Unlock()
 
