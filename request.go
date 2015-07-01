@@ -77,7 +77,6 @@ func (self *Request) Request() ([]byte, error) {
 		err = reqError
 	}
 
-	//此处是中间件Error调用
 	self.delegate.CallMiddlewareMethod("Error", []interface{}{err})
 
 	return []byte{}, err.(error)
