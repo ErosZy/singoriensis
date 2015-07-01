@@ -6,11 +6,6 @@ import (
 	"time"
 )
 
-const (
-	HTML_TYPE = iota
-	JSON_TYPE
-)
-
 var Threads chan int
 
 type Spider struct {
