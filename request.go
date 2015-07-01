@@ -4,15 +4,17 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"singoriensis/interfaces"
 	"strconv"
 	"strings"
 	"time"
 )
 
 type Request struct {
-	method string
-	urlStr string
-	params map[string]string
+	method   string
+	urlStr   string
+	params   map[string]string
+	delegate interfaces.DownloaderInterface
 }
 
 type RequestError struct {
@@ -23,13 +25,17 @@ func NewRequest() *Request {
 	return &Request{}
 }
 
-func (self Request) Init(method string, urlStr string) *Request {
-	self.method = method
-	self.urlStr = urlStr
-	return &self
+func (self *Request) SetDelegate(delegate interfaces.DownloaderInterface) {
+	self.delegate = delegate
 }
 
-func (self Request) Request() (string, error) {
+func (self *Request) Init(method string, urlStr string) *Request {
+	self.method = method
+	self.urlStr = urlStr
+	return self
+}
+
+func (self *Request) Request() ([]byte, error) {
 	var err interface{} = nil
 	body := &strings.Reader{}
 
@@ -38,7 +44,7 @@ func (self Request) Request() (string, error) {
 		Timeout: time.Duration(time.Millisecond * 500),
 	}
 
-	//此处是中间件SetParams调用
+	self.delegate.CallMiddlewareMethod("SetClient", []interface{}{client})
 
 	if len(self.params) > 0 {
 		params := self.params
@@ -52,16 +58,15 @@ func (self Request) Request() (string, error) {
 
 	req, reqError := http.NewRequest(self.method, self.urlStr, body)
 
-	//此处是中间件GetRequest调用
+	self.delegate.CallMiddlewareMethod("SetRequest", []interface{}{req})
 
 	if reqError == nil {
 		res, resError := client.Do(req)
 		if resError == nil {
 			if res.StatusCode == 200 {
-				//此处是中间件GetResponse调用
-
+				self.delegate.CallMiddlewareMethod("GetResponse", []interface{}{res})
 				bodyByte, _ := ioutil.ReadAll(res.Body)
-				return string(bodyByte), nil
+				return bodyByte, nil
 			} else {
 				err = RequestError{res.StatusCode}
 			}
@@ -72,9 +77,10 @@ func (self Request) Request() (string, error) {
 		err = reqError
 	}
 
-	//此处是中间件GetError调用
+	//此处是中间件Error调用
+	self.delegate.CallMiddlewareMethod("Error", []interface{}{err})
 
-	return "", err.(error)
+	return []byte{}, err.(error)
 }
 
 func (err RequestError) Error() string {

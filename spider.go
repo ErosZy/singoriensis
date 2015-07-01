@@ -44,7 +44,7 @@ func (self *Spider) AddUrl(urlstr string, pageType int) *Spider {
 	}
 
 	if self.scheduler == nil {
-		panic("downloader's scheduler is nil, please set scheduler.")
+		panic("scheduler instance is nil, please init scheduler.")
 	}
 
 	elemItem := common.ElementItem{UrlStr: urlstr, PageType: pageType}
@@ -64,6 +64,10 @@ func (self *Spider) SetDownloader(downloader interfaces.DownloaderInterface) *Sp
 }
 
 func (self *Spider) SetScheduler(scheduler interfaces.SchedulerInterface) *Spider {
+	if self.downloader == nil {
+		panic("downloader instance is nil, please init downloader.")
+	}
+
 	self.downloader.SetScheduler(scheduler)
 	self.scheduler = scheduler
 	return self
@@ -79,7 +83,7 @@ End:
 	for {
 		select {
 		case <-Threads:
-		case <-time.After(time.Minute * 10):
+		case <-time.After(time.Second * 5):
 			if count := self.scheduler.GetElemCount(); count == 0 {
 				break End
 			}
