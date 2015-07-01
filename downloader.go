@@ -45,7 +45,6 @@ func (self *Downloader) Start(threadNum int) {
 	for i := 0; i < threadNum; i++ {
 		go func(index int) {
 			var urlStr string
-			var method string
 
 			for {
 				elem := self.scheduler.ShiftElementItem()
@@ -53,9 +52,8 @@ func (self *Downloader) Start(threadNum int) {
 				if elem != nil {
 					elemItem := elem.(common.ElementItem)
 					urlStr = elemItem.UrlStr
-					method = "GET"
 
-					self.requests[index].Init(method, urlStr).Request()
+					self.requests[index].Init(urlStr).Request()
 
 					// for _, v := range self.middlewares {
 					// 	v.GetData(body)

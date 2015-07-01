@@ -11,7 +11,6 @@ import (
 )
 
 type Request struct {
-	method   string
 	urlStr   string
 	params   map[string]string
 	delegate interfaces.DownloaderInterface
@@ -29,8 +28,7 @@ func (self *Request) SetDelegate(delegate interfaces.DownloaderInterface) {
 	self.delegate = delegate
 }
 
-func (self *Request) Init(method string, urlStr string) *Request {
-	self.method = method
+func (self *Request) Init(urlStr string) *Request {
 	self.urlStr = urlStr
 	return self
 }
@@ -56,7 +54,7 @@ func (self *Request) Request() ([]byte, error) {
 		body = strings.NewReader(values.Encode())
 	}
 
-	req, reqError := http.NewRequest(self.method, self.urlStr, body)
+	req, reqError := http.NewRequest("GET", self.urlStr, body)
 
 	self.delegate.CallMiddlewareMethod("SetRequest", []interface{}{req})
 
