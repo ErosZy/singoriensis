@@ -1,6 +1,6 @@
 package common
 
 type ElementItem struct {
-	UrlStr   string
-	FaildNum int
+	UrlStr     string
+	FaildCount int
 }

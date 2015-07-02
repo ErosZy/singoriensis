@@ -13,12 +13,15 @@ type Spider struct {
 	taskName   string
 	scheduler  interfaces.SchedulerInterface
 	downloader interfaces.DownloaderInterface
+	pipeliner  interfaces.PipelinerInterface
+	process    interfaces.ProcessInterface
 }
 
-func NewSpider(taskName string, process interface{}) *Spider {
+func NewSpider(taskName string, process interfaces.ProcessInterface) *Spider {
 	return &Spider{
 		threadNum: 1,
 		taskName:  taskName,
+		process:   process,
 	}
 }
 
@@ -42,14 +45,19 @@ func (self *Spider) AddUrl(urlstr string) *Spider {
 		panic("scheduler instance is nil, please init scheduler.")
 	}
 
-	elemItem := common.ElementItem{UrlStr: urlstr, FaildNum: 0}
+	if self.pipeliner == nil {
+		panic("pipeliner instance is nil, please init pipeliner.")
+	}
 
-	self.scheduler.AddElementItem(elemItem)
+	elemItem := common.ElementItem{UrlStr: urlstr, FaildCount: 0}
+
+	self.scheduler.AddElementItem(elemItem, false)
 
 	return self
 }
 
-func (self *Spider) AddPipeline() *Spider {
+func (self *Spider) SetPipeliner(pipeliner interfaces.PipelinerInterface) *Spider {
+	self.pipeliner = pipeliner
 	return self
 }
 
@@ -59,11 +67,6 @@ func (self *Spider) SetDownloader(downloader interfaces.DownloaderInterface) *Sp
 }
 
 func (self *Spider) SetScheduler(scheduler interfaces.SchedulerInterface) *Spider {
-	if self.downloader == nil {
-		panic("downloader instance is nil, please init downloader.")
-	}
-
-	self.downloader.SetScheduler(scheduler)
 	self.scheduler = scheduler
 	return self
 }
@@ -72,6 +75,9 @@ func (self *Spider) Run() {
 	num := self.threadNum
 	Threads = make(chan int, num)
 
+	self.downloader.SetProcess(self.process)
+	self.downloader.SetPipeliner(self.pipeliner)
+	self.downloader.SetScheduler(self.scheduler)
 	self.downloader.Start(num)
 
 End:

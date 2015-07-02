@@ -2,7 +2,6 @@ package singoriensis
 
 import (
 	"container/list"
-	"fmt"
 	"singoriensis/common"
 	"singoriensis/interfaces"
 	"sync"
@@ -38,13 +37,12 @@ func (self *Scheduler) CallMiddlewareMethod(name string, params []interface{}) {
 	common.CallObjMethod(self.middlewares, name, params)
 }
 
-func (self *Scheduler) AddElementItem(elem common.ElementItem) {
+func (self *Scheduler) AddElementItem(elem common.ElementItem, isForce bool) {
 	self.mutex.Lock()
 
 	self.CallMiddlewareMethod("ElementItemIn", []interface{}{elem})
 
-	if !self.urlHeap.Contain(elem) {
-		fmt.Println(elem)
+	if isForce || !self.urlHeap.Contain(elem) {
 		self.elems.PushBack(elem)
 	}
 

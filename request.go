@@ -1,7 +1,6 @@
 package singoriensis
 
 import (
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"singoriensis/interfaces"
@@ -33,7 +32,7 @@ func (self *Request) Init(urlStr string) *Request {
 	return self
 }
 
-func (self *Request) Request() ([]byte, error) {
+func (self *Request) Request() (*http.Request, *http.Response, error) {
 	var err interface{} = nil
 	body := &strings.Reader{}
 
@@ -63,8 +62,7 @@ func (self *Request) Request() ([]byte, error) {
 		if resError == nil {
 			if res.StatusCode == 200 {
 				self.delegate.CallMiddlewareMethod("GetResponse", []interface{}{res})
-				bodyByte, _ := ioutil.ReadAll(res.Body)
-				return bodyByte, nil
+				return req, res, nil
 			} else {
 				err = RequestError{res.StatusCode}
 			}
@@ -77,7 +75,7 @@ func (self *Request) Request() ([]byte, error) {
 
 	self.delegate.CallMiddlewareMethod("Error", []interface{}{err})
 
-	return []byte{}, err.(error)
+	return nil, nil, err.(error)
 }
 
 func (err RequestError) Error() string {

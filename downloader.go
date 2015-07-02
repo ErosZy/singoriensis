@@ -6,9 +6,13 @@ import (
 	"time"
 )
 
+var retryMaxCount int
+
 type Downloader struct {
 	requests    []*Request
 	scheduler   interfaces.SchedulerInterface
+	pipeliner   interfaces.PipelinerInterface
+	process     interfaces.ProcessInterface
 	middlewares []interfaces.DownloaderMiddlewareInterface
 }
 
@@ -25,6 +29,23 @@ func (self *Downloader) GetScheduler() interfaces.SchedulerInterface {
 func (self *Downloader) SetScheduler(scheduler interfaces.SchedulerInterface) {
 	self.scheduler = scheduler
 }
+
+func (self *Downloader) SetPipeliner(pipeliner interfaces.PipelinerInterface) {
+	self.pipeliner = pipeliner
+}
+
+func (self *Downloader) SetProcess(process interfaces.ProcessInterface) {
+	self.process = process
+}
+
+func (self *Downloader) SetRetryMaxCount(count int) {
+	if count < 0 {
+		panic("thread retry max num can't be lt 0.")
+	}
+
+	retryMaxCount = count
+}
+
 func (self *Downloader) RegisterMiddleware(mw interfaces.DownloaderMiddlewareInterface) {
 	self.middlewares = append(self.middlewares, mw)
 }
@@ -43,7 +64,7 @@ func (self *Downloader) Start(threadNum int) {
 	}
 
 	for i := 0; i < threadNum; i++ {
-		go func(index int) {
+		go func(index int, retryMaxCount int) {
 			var urlStr string
 
 			for {
@@ -53,11 +74,30 @@ func (self *Downloader) Start(threadNum int) {
 					elemItem := elem.(common.ElementItem)
 					urlStr = elemItem.UrlStr
 
-					self.requests[index].Init(urlStr).Request()
+					req, res, err := self.requests[index].Init(urlStr).Request()
 
-					// for _, v := range self.middlewares {
-					// 	v.GetData(body)
-					// }
+					if err != nil {
+						if elemItem.FaildCount < retryMaxCount {
+							elemItem.FaildCount += 1
+							self.scheduler.AddElementItem(elemItem, true)
+						}
+					} else {
+						params := make([]interface{}, 0)
+						page := common.NewPage(req, res)
+						self.process.Do(page)
+
+						items, elems := page.GetAll()
+
+						for _, v := range elems {
+							self.scheduler.AddElementItem(v, false)
+						}
+
+						for _, v := range items {
+							params = append(params, v)
+						}
+
+						self.pipeliner.CallMiddlewareMethod("GetItems", params)
+					}
 
 					Threads <- index
 
@@ -66,6 +106,6 @@ func (self *Downloader) Start(threadNum int) {
 				}
 			}
 
-		}(i)
+		}(i, retryMaxCount)
 	}
 }
