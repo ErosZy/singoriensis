@@ -35,6 +35,7 @@ func (self *UrlHeap) Contain(elem common.ElementItem) bool {
 			value := nextItem.Value.(common.ElementItem)
 			if value.UrlStr == elem.UrlStr {
 				flag = true
+				break
 			}
 		}
 	} else {

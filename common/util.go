@@ -26,7 +26,7 @@ func CallObjMethod(objs interface{}, name string, params []interface{}) {
 
 func NewDjb2Hash(str string) *big.Int {
 	hash := big.NewInt(5381)
-	mulNum := big.NewInt(33)
+	mulNum := big.NewInt(33) //magic number 33
 
 	for _, v := range str {
 		strInt := big.NewInt(int64(v))

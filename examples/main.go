@@ -17,7 +17,7 @@ func main() {
 	spider.SetThreadNum(1).SetDownloader(downloader).SetScheduler(scheduler)
 
 	for i := 0; i < 1000; i++ {
-		spider.AddUrl("http://www.baidu.com/")
+		spider.AddUrl("http://www.baidu.com")
 	}
 
 	spider.Run()
