@@ -22,3 +22,15 @@ func CallObjMethod(objs interface{}, name string, params []interface{}) {
 		}
 	}
 }
+
+func NewDjb2Hash(str string) int64 {
+	var hash int64 = 0
+
+	for _, v := range str {
+		strInt := int64(v)
+		hash = hash*33 + strInt
+
+	}
+
+	return hash
+}

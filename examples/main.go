@@ -11,11 +11,14 @@ func main() {
 	downloader := sg.NewDownloader()
 	downloader.RegisterMiddleware(mw.NewDefaultDownloaderMiddleware())
 
-	scheduler := sg.NewScheduler()
+	scheduler := sg.NewScheduler(100)
 	scheduler.RegisterMiddleware(mw.NewDefaultSchedulerMiddleware())
 
 	spider.SetThreadNum(1).SetDownloader(downloader).SetScheduler(scheduler)
-	spider.AddUrl("http://www.baidu.com")
+
+	for i := 0; i < 1000; i++ {
+		spider.AddUrl("http://www.baidu.com/")
+	}
 
 	spider.Run()
 }

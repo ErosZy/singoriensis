@@ -2,6 +2,7 @@ package singoriensis
 
 import (
 	"container/list"
+	"fmt"
 	"singoriensis/common"
 	"singoriensis/interfaces"
 	"sync"
@@ -10,15 +11,17 @@ import (
 type Scheduler struct {
 	elems       *list.List
 	mutex       *sync.Mutex
+	urlHeap     *UrlHeap
 	middlewares []interfaces.SchedulerMiddlewareInterface
 }
 
 type SchedulerError struct{}
 
-func NewScheduler() *Scheduler {
+func NewScheduler(heapSize int) *Scheduler {
 	return &Scheduler{
 		elems:       list.New(),
 		mutex:       &sync.Mutex{},
+		urlHeap:     NewUrlHeap(heapSize),
 		middlewares: make([]interfaces.SchedulerMiddlewareInterface, 0),
 	}
 }
@@ -39,7 +42,11 @@ func (self *Scheduler) AddElementItem(elem common.ElementItem) {
 	self.mutex.Lock()
 
 	self.CallMiddlewareMethod("ElementItemIn", []interface{}{elem})
-	self.elems.PushBack(elem)
+
+	if !self.urlHeap.Contain(elem) {
+		fmt.Println(elem)
+		self.elems.PushBack(elem)
+	}
 
 	self.mutex.Unlock()
 }
