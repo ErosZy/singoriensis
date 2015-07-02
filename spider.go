@@ -32,7 +32,7 @@ func (self *Spider) SetThreadNum(num int) *Spider {
 	return self
 }
 
-func (self *Spider) AddUrl(urlstr string, pageType int) *Spider {
+func (self *Spider) AddUrl(urlstr string) *Spider {
 
 	if self.downloader == nil {
 		panic("downloader instance is nil, please init downloader.")
@@ -42,7 +42,7 @@ func (self *Spider) AddUrl(urlstr string, pageType int) *Spider {
 		panic("scheduler instance is nil, please init scheduler.")
 	}
 
-	elemItem := common.ElementItem{UrlStr: urlstr, PageType: pageType}
+	elemItem := common.ElementItem{UrlStr: urlstr, FaildNum: 0}
 
 	self.scheduler.AddElementItem(elemItem)
 
