@@ -4,6 +4,7 @@ import (
 	"container/list"
 	"crypto/md5"
 	"encoding/hex"
+	"math/big"
 	"singoriensis/common"
 )
 
@@ -20,17 +21,12 @@ func NewUrlHeap(heapSize int) *UrlHeap {
 }
 
 func (self *UrlHeap) Contain(elem common.ElementItem) bool {
-	var i int64
 	flag := false
 	crypto := md5.New()
 	crypto.Write([]byte(elem.UrlStr))
 	hashNum := common.NewDjb2Hash(hex.EncodeToString(crypto.Sum(nil)))
-
-	if hashNum < 0 {
-		i = int64(self.size)
-	} else {
-		i = common.NewDjb2Hash(hex.EncodeToString(crypto.Sum(nil))) % int64(self.size)
-	}
+	hashNum = hashNum.Mod(hashNum, big.NewInt(int64(self.size)))
+	i := hashNum.Int64()
 
 	hashList := self.hash[int(i)]
 	if hashList != nil {

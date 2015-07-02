@@ -1,6 +1,7 @@
 package common
 
 import (
+	"math/big"
 	"reflect"
 )
 
@@ -23,13 +24,14 @@ func CallObjMethod(objs interface{}, name string, params []interface{}) {
 	}
 }
 
-func NewDjb2Hash(str string) int64 {
-	var hash int64 = 0
+func NewDjb2Hash(str string) *big.Int {
+	hash := big.NewInt(5381)
+	mulNum := big.NewInt(33)
 
 	for _, v := range str {
-		strInt := int64(v)
-		hash = hash*33 + strInt
-
+		strInt := big.NewInt(int64(v))
+		hash = hash.Mul(hash, mulNum)
+		hash = hash.Add(hash, strInt)
 	}
 
 	return hash
