@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	query "github.com/PuerkitoBio/goquery"
 	"io/ioutil"
 	"runtime"
 	sg "singoriensis"
@@ -13,8 +14,33 @@ import (
 type MyProcess struct{}
 
 func (process *MyProcess) Do(page *cm.Page) {
-	bodyStr, _ := ioutil.ReadAll(page.Res.Body)
-	fmt.Println(string(bodyStr))
+	bytes, _ := ioutil.ReadAll(page.Res.Body)
+	bodyStr := string(bytes[:])
+	reader := strings.NewReader(bodyStr)
+	reqUrl := page.Req.URL
+
+	fmt.Println("=============", reqUrl)
+
+	doc, _ := query.NewDocumentFromReader(reader)
+
+	if reqUrl.String() == "http://www.epet.com/" {
+		doc.Find(".catelist h3 a").Each(func(i int, s *query.Selection) {
+			href, exists := s.Attr("href")
+			if exists {
+				url, err := reqUrl.Parse(href)
+				if err == nil {
+					urlStr := url.String()
+					page.AddElem(cm.NewElementItem(urlStr))
+				}
+			}
+		})
+	} else {
+		doc.Find(".list_box-li .gtitle").Each(func(i int, s *query.Selection) {
+			text := s.Text()
+			fmt.Println(text)
+		})
+	}
+
 }
 
 func main() {
@@ -38,7 +64,7 @@ func main() {
 	spider.SetPipeliner(pipeliner)
 
 	for i := 0; i < 1; i++ {
-		url := strings.Join([]string{"http://www.baidu.com/index=", string(i)}, " ")
+		url := "http://www.epet.com/"
 		spider.AddUrl(url)
 	}
 

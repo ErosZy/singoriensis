@@ -49,7 +49,7 @@ func (self *Spider) AddUrl(urlstr string) *Spider {
 		panic("pipeliner instance is nil, please init pipeliner.")
 	}
 
-	elemItem := common.ElementItem{UrlStr: urlstr, FaildCount: 0}
+	elemItem := common.NewElementItem(urlstr)
 
 	self.scheduler.AddElementItem(elemItem, false)
 
