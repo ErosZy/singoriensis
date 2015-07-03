@@ -26,10 +26,12 @@ func (process *MyProcess) Do(page *cm.Page) {
 	reader := strings.NewReader(bodyStr)
 	reqUrl := page.Req.URL
 
+
 	pageMutex.Lock()
 	pageCount++
 	fmt.Println(pageCount)
 	pageMutex.Unlock()
+
 
 	doc, _ := query.NewDocumentFromReader(reader)
 
@@ -97,7 +99,14 @@ func main() {
 	spider.SetScheduler(scheduler)
 	spider.SetPipeliner(pipeliner)
 
+<<<<<<< HEAD
 	spider.AddUrl("http://www.epet.com/")
+=======
+	for i := 0; i < 1; i++ {
+		url := "http://www.epet.com/"
+		spider.AddUrl(url)
+	}
+>>>>>>> origin/master
 
 	spider.Run()
 }
