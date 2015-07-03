@@ -49,7 +49,7 @@ func (self *Spider) AddUrl(urlstr string) *Spider {
 		panic("pipeliner instance is nil, please init pipeliner.")
 	}
 
-	elemItem := common.ElementItem{UrlStr: urlstr, FaildCount: 0}
+	elemItem := common.NewElementItem(urlstr)
 
 	self.scheduler.AddElementItem(elemItem, false)
 
@@ -84,7 +84,7 @@ End:
 	for {
 		select {
 		case <-Threads:
-		case <-time.After(time.Second * 5):
+		case <-time.After(time.Second * 20):
 			if count := self.scheduler.GetElemCount(); count == 0 {
 				break End
 			}

@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"fmt"
+	//"fmt"
 	"singoriensis/common"
 )
 
@@ -12,9 +12,9 @@ func NewDefaultSchedulerMiddleware() *DefaultSchedulerMiddleware {
 }
 
 func (self *DefaultSchedulerMiddleware) ElementItemIn(elem common.ElementItem) {
-	fmt.Println("in", elem)
+	//fmt.Println("in", elem)
 }
 
 func (self *DefaultSchedulerMiddleware) ElementItemOut(elem common.ElementItem) {
-	fmt.Println("out", elem)
+	//fmt.Println("out", elem)
 }

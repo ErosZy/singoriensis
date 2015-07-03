@@ -38,6 +38,11 @@ func (self *UrlHeap) Contain(elem common.ElementItem) bool {
 				break
 			}
 		}
+
+		if !flag {
+			hashList.PushBack(elem)
+		}
+
 	} else {
 		hashList = list.New()
 		hashList.PushBack(elem)

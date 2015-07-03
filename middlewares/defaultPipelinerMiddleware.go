@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"fmt"
+	//"fmt"
 	"singoriensis/common"
 )
 
@@ -12,5 +12,5 @@ func NewDefaultPipelinerMiddleware() *DefaultPipelinerMiddleware {
 }
 
 func (self *DefaultPipelinerMiddleware) GetItems(items []common.PipelinerItem) {
-	fmt.Println(items)
+	//fmt.Println(items)
 }
