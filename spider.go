@@ -84,7 +84,7 @@ End:
 	for {
 		select {
 		case <-Threads:
-		case <-time.After(time.Second * 20):
+		case <-time.After(time.Minute * 30):
 			if count := self.scheduler.GetElemCount(); count == 0 {
 				break End
 			}

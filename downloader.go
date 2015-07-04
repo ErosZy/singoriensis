@@ -86,6 +86,8 @@ func (self *Downloader) Start(threadNum int) {
 						page := common.NewPage(req, res)
 						self.process.Do(page)
 
+						res.Body.Close()
+
 						items, elems := page.GetAll()
 
 						for _, v := range elems {
@@ -102,7 +104,7 @@ func (self *Downloader) Start(threadNum int) {
 					Threads <- index
 
 				} else {
-					time.Sleep(1 * time.Second)
+					time.Sleep(2 * time.Second)
 				}
 			}
 

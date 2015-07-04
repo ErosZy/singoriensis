@@ -13,7 +13,7 @@ func NewDefaultDownloaderMiddleware() *DefaultDownloaderMiddleware {
 }
 
 func (self *DefaultDownloaderMiddleware) SetClient(client *http.Client) {
-	client.Timeout = 1 * time.Second
+	client.Timeout = 2 * time.Second
 }
 
 func (self *DefaultDownloaderMiddleware) SetRequest(req *http.Request) {
