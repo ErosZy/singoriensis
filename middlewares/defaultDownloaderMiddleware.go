@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type DefaultDownloaderMiddleware struct{}
+type DefaultDownloaderMiddleware struct {}
 
 func NewDefaultDownloaderMiddleware() *DefaultDownloaderMiddleware {
 	return &DefaultDownloaderMiddleware{}

@@ -80,7 +80,7 @@ func (self *Spider) Run() {
 	self.downloader.SetScheduler(self.scheduler)
 	self.downloader.Start(num)
 
-End:
+	End:
 	for {
 		select {
 		case <-Threads:

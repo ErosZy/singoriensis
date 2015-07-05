@@ -1,11 +1,11 @@
 package middlewares
 
 import (
-	//"fmt"
+//"fmt"
 	"singoriensis/common"
 )
 
-type DefaultSchedulerMiddleware struct{}
+type DefaultSchedulerMiddleware struct {}
 
 func NewDefaultSchedulerMiddleware() *DefaultSchedulerMiddleware {
 	return &DefaultSchedulerMiddleware{}

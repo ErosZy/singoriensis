@@ -14,7 +14,7 @@ type Scheduler struct {
 	middlewares []interfaces.SchedulerMiddlewareInterface
 }
 
-type SchedulerError struct{}
+type SchedulerError struct {}
 
 func NewScheduler(heapSize int) *Scheduler {
 	return &Scheduler{

@@ -1,11 +1,11 @@
 package middlewares
 
 import (
-	//"fmt"
+//"fmt"
 	"singoriensis/common"
 )
 
-type DefaultPipelinerMiddleware struct{}
+type DefaultPipelinerMiddleware struct {}
 
 func NewDefaultPipelinerMiddleware() *DefaultPipelinerMiddleware {
 	return &DefaultPipelinerMiddleware{}
