@@ -1,4 +1,5 @@
 package interfaces
+import "time"
 
 type DownloaderInterface interface {
 	GetScheduler() SchedulerInterface
@@ -6,6 +7,7 @@ type DownloaderInterface interface {
 	SetRetryMaxCount(int)
 	SetPipeliner(PipelinerInterface)
 	SetProcess(ProcessInterface)
+	SetSleepTime(time.Duration)
 	RegisterMiddleware(DownloaderMiddlewareInterface)
 	CallMiddlewareMethod(string, []interface{})
 	Start(int)

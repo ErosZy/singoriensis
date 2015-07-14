@@ -1,5 +1,9 @@
 package interfaces
 
+import (
+	"singoriensis/common"
+)
+
 type UrlHeapInterface interface {
-	Contain(urlStr string) bool
+	Contain(common.ElementItem) bool
 }

@@ -9,6 +9,7 @@ import (
 var retryMaxCount int
 
 type Downloader struct {
+	sleepTime   time.Duration
 	requests    []*Request
 	scheduler   interfaces.SchedulerInterface
 	pipeliner   interfaces.PipelinerInterface
@@ -18,6 +19,7 @@ type Downloader struct {
 
 func NewDownloader() *Downloader {
 	return &Downloader{
+		sleepTime:   1 * time.Second,
 		middlewares: make([]interfaces.DownloaderMiddlewareInterface, 0),
 	}
 }
@@ -36,6 +38,10 @@ func (self *Downloader) SetPipeliner(pipeliner interfaces.PipelinerInterface) {
 
 func (self *Downloader) SetProcess(process interfaces.ProcessInterface) {
 	self.process = process
+}
+
+func (self *Downloader) SetSleepTime(time time.Duration) {
+	self.sleepTime = time
 }
 
 func (self *Downloader) SetRetryMaxCount(count int) {
@@ -104,7 +110,7 @@ func (self *Downloader) Start(threadNum int) {
 					Threads <- index
 
 				} else {
-					time.Sleep(2 * time.Second)
+					time.Sleep(self.sleepTime)
 				}
 			}
 

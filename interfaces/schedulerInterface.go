@@ -6,6 +6,7 @@ import (
 
 type SchedulerInterface interface {
 	GetElemCount() int
+	SetUrlHeap(UrlHeapInterface)
 	RegisterMiddleware(SchedulerMiddlewareInterface)
 	CallMiddlewareMethod(string, []interface{})
 	AddElementItem(common.ElementItem, bool)

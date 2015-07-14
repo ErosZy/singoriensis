@@ -12,11 +12,10 @@ import (
 	mw "singoriensis/middlewares"
 	"strings"
 	"sync"
+	"time"
 )
 
 var fileMutex *sync.Mutex = &sync.Mutex{}
-var pageMutex *sync.Mutex = &sync.Mutex{}
-var pageCount int = 0
 var file *os.File
 
 type MyProcess struct {}
@@ -26,11 +25,6 @@ func (process *MyProcess) Do(page *cm.Page) {
 	bodyStr := string(bytes[:])
 	reader := strings.NewReader(bodyStr)
 	reqUrl := page.Req.URL
-
-	pageMutex.Lock()
-	pageCount++
-	fmt.Println(pageCount)
-	pageMutex.Unlock()
 
 	doc, _ := query.NewDocumentFromReader(reader)
 
@@ -61,6 +55,7 @@ func (process *MyProcess) Do(page *cm.Page) {
 			tmp = strings.Join([]string{tmp, sellNum, name, price}, " ")
 
 			fileMutex.Lock()
+			fmt.Println(strings.Join([]string{tmp, "\r\n"}, ""));
 			file.WriteString(strings.Join([]string{tmp, "\r\n"}, ""))
 			fileMutex.Unlock()
 		})
@@ -109,6 +104,7 @@ func (process *MyProcess) Do(page *cm.Page) {
 	//			tmp = strings.Join([]string{tmp, sellNum, name, price}, " ")
 	//
 	//			fileMutex.Lock()
+	//			fmt.Println(strings.Join([]string{tmp, "\r\n"}, ""));
 	//			file.WriteString(strings.Join([]string{tmp, "\r\n"}, ""))
 	//			fileMutex.Unlock()
 	//
@@ -141,10 +137,12 @@ func main() {
 	spider := sg.NewSpider("test", &MyProcess{})
 
 	downloader := sg.NewDownloader()
+	downloader.SetSleepTime(2 * time.Second)
 	downloader.SetRetryMaxCount(0)
 	downloader.RegisterMiddleware(mw.NewDefaultDownloaderMiddleware())
 
-	scheduler := sg.NewScheduler(100)
+	scheduler := sg.NewScheduler()
+	scheduler.SetUrlHeap(sg.NewUrlHeap(50))
 	scheduler.RegisterMiddleware(mw.NewDefaultSchedulerMiddleware())
 
 	pipeliner := sg.NewPipeliner()
@@ -158,6 +156,7 @@ func main() {
 	spider.AddUrl("http://shop.boqii.com/")
 	//spider.AddUrl("http://www.epet.com/")
 
+	spider.SetTimeout(5 * time.Second)
 	spider.Run()
 }
 

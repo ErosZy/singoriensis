@@ -11,31 +11,31 @@ var Threads chan int
 type Spider struct {
 	threadNum  int
 	taskName   string
+	timeout    time.Duration
 	scheduler  interfaces.SchedulerInterface
 	downloader interfaces.DownloaderInterface
 	pipeliner  interfaces.PipelinerInterface
 	process    interfaces.ProcessInterface
 }
 
-func NewSpider(taskName string, process interfaces.ProcessInterface) *Spider {
+func NewSpider(taskName string, process interfaces.ProcessInterface) *Spider{
 	return &Spider{
 		threadNum: 1,
 		taskName:  taskName,
+		timeout:   time.Second * 30,
 		process:   process,
 	}
 }
 
-func (self *Spider) SetThreadNum(num int) *Spider {
+func (self *Spider) SetThreadNum(num int) {
 	if num <= 0 {
 		panic("spider thread num can't be lt 0, please check it.")
 	} else {
 		self.threadNum = num
 	}
-
-	return self
 }
 
-func (self *Spider) AddUrl(urlstr string) *Spider {
+func (self *Spider) AddUrl(urlstr string) {
 
 	if self.downloader == nil {
 		panic("downloader instance is nil, please init downloader.")
@@ -52,23 +52,22 @@ func (self *Spider) AddUrl(urlstr string) *Spider {
 	elemItem := common.NewElementItem(urlstr)
 
 	self.scheduler.AddElementItem(elemItem, false)
-
-	return self
 }
 
-func (self *Spider) SetPipeliner(pipeliner interfaces.PipelinerInterface) *Spider {
+func (self *Spider) SetPipeliner(pipeliner interfaces.PipelinerInterface) {
 	self.pipeliner = pipeliner
-	return self
 }
 
-func (self *Spider) SetDownloader(downloader interfaces.DownloaderInterface) *Spider {
+func (self *Spider) SetDownloader(downloader interfaces.DownloaderInterface) {
 	self.downloader = downloader
-	return self
 }
 
-func (self *Spider) SetScheduler(scheduler interfaces.SchedulerInterface) *Spider {
+func (self *Spider) SetScheduler(scheduler interfaces.SchedulerInterface) {
 	self.scheduler = scheduler
-	return self
+}
+
+func (self *Spider) SetTimeout(time time.Duration) {
+	self.timeout = time
 }
 
 func (self *Spider) Run() {
@@ -84,7 +83,7 @@ func (self *Spider) Run() {
 	for {
 		select {
 		case <-Threads:
-		case <-time.After(time.Minute * 30):
+		case <-time.After(self.timeout):
 			if count := self.scheduler.GetElemCount(); count == 0 {
 				break End
 			}
