@@ -109,9 +109,9 @@ func (self *Downloader) Start(threadNum int) {
 
 					Threads <- index
 
-				} else {
-					time.Sleep(self.sleepTime)
 				}
+
+				time.Sleep(self.sleepTime)
 			}
 
 		}(i, retryMaxCount)

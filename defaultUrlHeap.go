@@ -13,7 +13,7 @@ type UrlHeap struct {
 	size int
 }
 
-func NewUrlHeap(heapSize int) *UrlHeap {
+func NewDefaultUrlHeap(heapSize int) *UrlHeap {
 	return &UrlHeap{
 		hash: make([]*list.List, heapSize+1),
 		size: heapSize,

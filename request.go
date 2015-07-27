@@ -47,7 +47,7 @@ func (self *Request) Request() (*http.Request, *http.Response, error) {
 		params := self.params
 
 		for v, k := range params {
-			values.Add(k, v)
+			values.Add(v, k)
 		}
 
 		body = strings.NewReader(values.Encode())

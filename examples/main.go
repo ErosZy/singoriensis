@@ -18,7 +18,7 @@ import (
 var fileMutex *sync.Mutex = &sync.Mutex{}
 var file *os.File
 
-type MyProcess struct {}
+type MyProcess struct{}
 
 func (process *MyProcess) Do(page *cm.Page) {
 	bytes, _ := ioutil.ReadAll(page.Res.Body)
@@ -55,7 +55,7 @@ func (process *MyProcess) Do(page *cm.Page) {
 			tmp = strings.Join([]string{tmp, sellNum, name, price}, " ")
 
 			fileMutex.Lock()
-			fmt.Println(strings.Join([]string{tmp, "\r\n"}, ""));
+			fmt.Println(strings.Join([]string{tmp, "\r\n"}, ""))
 			file.WriteString(strings.Join([]string{tmp, "\r\n"}, ""))
 			fileMutex.Unlock()
 		})
@@ -142,7 +142,7 @@ func main() {
 	downloader.RegisterMiddleware(mw.NewDefaultDownloaderMiddleware())
 
 	scheduler := sg.NewScheduler()
-	scheduler.SetUrlHeap(sg.NewUrlHeap(50))
+	scheduler.SetUrlHeap(sg.NewDefaultUrlHeap(50))
 	scheduler.RegisterMiddleware(mw.NewDefaultSchedulerMiddleware())
 
 	pipeliner := sg.NewPipeliner()
@@ -159,5 +159,3 @@ func main() {
 	spider.SetTimeout(5 * time.Second)
 	spider.Run()
 }
-
-
