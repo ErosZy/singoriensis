@@ -1,16 +1,11 @@
 package middlewares
 
-import (
-//"fmt"
-	"singoriensis/common"
-)
-
 type DefaultPipelinerMiddleware struct {}
 
 func NewDefaultPipelinerMiddleware() *DefaultPipelinerMiddleware {
 	return &DefaultPipelinerMiddleware{}
 }
 
-func (self *DefaultPipelinerMiddleware) GetItems(items []common.PipelinerItem) {
+func (self *DefaultPipelinerMiddleware) GetItems(items []interface{}) {
 	//fmt.Println(items)
 }

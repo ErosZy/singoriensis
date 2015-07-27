@@ -88,7 +88,6 @@ func (self *Downloader) Start(threadNum int) {
 							self.scheduler.AddElementItem(elemItem, true)
 						}
 					} else {
-						params := make([]interface{}, 0)
 						page := common.NewPage(req, res)
 						self.process.Do(page)
 
@@ -100,11 +99,7 @@ func (self *Downloader) Start(threadNum int) {
 							self.scheduler.AddElementItem(v, false)
 						}
 
-						for _, v := range items {
-							params = append(params, v)
-						}
-
-						self.pipeliner.CallMiddlewareMethod("GetItems", params)
+						self.pipeliner.CallMiddlewareMethod("GetItems", items)
 					}
 
 					Threads <- index
