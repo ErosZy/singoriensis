@@ -6,12 +6,12 @@ import (
 )
 
 type Pipeliner struct {
-	middlewares []interface{}
+	middlewares []interfaces.PipelinerMiddlewareInterface
 }
 
 func NewPipeliner() *Pipeliner {
 	return &Pipeliner{
-		middlewares: make([]interface{}, 0),
+		middlewares: make([]interfaces.PipelinerMiddlewareInterface, 0),
 	}
 }
 

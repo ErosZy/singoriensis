@@ -75,7 +75,6 @@ func (self *Downloader) Start(threadNum int) {
 
 			for {
 				elem := self.scheduler.ShiftElementItem()
-
 				if elem != nil {
 					elemItem := elem.(common.ElementItem)
 					urlStr = elemItem.UrlStr
@@ -99,11 +98,12 @@ func (self *Downloader) Start(threadNum int) {
 							self.scheduler.AddElementItem(v, false)
 						}
 
-						self.pipeliner.CallMiddlewareMethod("GetItems", items)
+						if len(items) > 0 {
+							self.pipeliner.CallMiddlewareMethod("GetItems", items)
+						}
 					}
 
 					Threads <- index
-
 				}
 
 				time.Sleep(self.sleepTime)
