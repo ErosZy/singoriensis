@@ -75,6 +75,7 @@ func (self *Downloader) Start(threadNum int) {
 
 			for {
 				elem := self.scheduler.ShiftElementItem()
+
 				if elem != nil {
 					elemItem := elem.(common.ElementItem)
 					urlStr = elemItem.UrlStr
