@@ -4,6 +4,7 @@ import (
 	"singoriensis/common"
 	"singoriensis/interfaces"
 	"time"
+	"fmt"
 )
 
 var retryMaxCount int
@@ -64,9 +65,8 @@ func (self *Downloader) Start(threadNum int) {
 	self.requests = make([]*Request, threadNum)
 
 	for i := 0; i < threadNum; i++ {
-		request := NewRequest()
+		request := NewRequest(self)
 		self.requests[i] = request
-		self.requests[i].SetDelegate(self)
 	}
 
 	for i := 0; i < threadNum; i++ {
@@ -83,6 +83,7 @@ func (self *Downloader) Start(threadNum int) {
 					req, res, err := self.requests[index].Init(urlStr).Request()
 
 					if err != nil {
+						fmt.Println(err.Error(), elemItem)
 						if elemItem.FaildCount < retryMaxCount {
 							elemItem.FaildCount += 1
 							self.scheduler.AddElementItem(elemItem, true)

@@ -11,6 +11,7 @@ import (
 
 type Request struct {
 	urlStr   string
+	client *http.Client
 	params   map[string]string
 	delegate interfaces.DownloaderInterface
 }
@@ -19,12 +20,17 @@ type RequestError struct {
 	statusCode int
 }
 
-func NewRequest() *Request {
-	return &Request{}
-}
+func NewRequest(delegate interfaces.DownloaderInterface) *Request {
+	client :=  &http.Client{
+		Timeout: time.Duration(time.Millisecond * 500),
+	}
 
-func (self *Request) SetDelegate(delegate interfaces.DownloaderInterface) {
-	self.delegate = delegate
+	delegate.CallMiddlewareMethod("SetClient", []interface{}{client})
+
+	return &Request{
+		delegate: delegate,
+		client: client,
+	}
 }
 
 func (self *Request) Init(urlStr string) *Request {
@@ -37,11 +43,6 @@ func (self *Request) Request() (*http.Request, *http.Response, error) {
 	body := &strings.Reader{}
 
 	values := url.Values{}
-	client := &http.Client{
-		Timeout: time.Duration(time.Millisecond * 500),
-	}
-
-	self.delegate.CallMiddlewareMethod("SetClient", []interface{}{client})
 
 	if len(self.params) > 0 {
 		params := self.params
@@ -58,7 +59,7 @@ func (self *Request) Request() (*http.Request, *http.Response, error) {
 	self.delegate.CallMiddlewareMethod("SetRequest", []interface{}{req})
 
 	if reqError == nil {
-		res, resError := client.Do(req)
+		res, resError := self.client.Do(req)
 		if resError == nil {
 			if res.StatusCode == 200 {
 				self.delegate.CallMiddlewareMethod("GetResponse", []interface{}{res})
