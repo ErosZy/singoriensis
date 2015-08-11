@@ -11,7 +11,7 @@ import (
 
 type Request struct {
 	urlStr   string
-	client *http.Client
+	client   *http.Client
 	params   map[string]string
 	delegate interfaces.DownloaderInterface
 }
@@ -21,7 +21,7 @@ type RequestError struct {
 }
 
 func NewRequest(delegate interfaces.DownloaderInterface) *Request {
-	client :=  &http.Client{
+	client := &http.Client{
 		Timeout: time.Duration(time.Millisecond * 500),
 	}
 
@@ -74,7 +74,7 @@ func (self *Request) Request() (*http.Request, *http.Response, error) {
 		err = reqError
 	}
 
-	self.delegate.CallMiddlewareMethod("Error", []interface{}{err})
+	self.delegate.CallMiddlewareMethod("Error", []interface{}{self.client, err})
 
 	return nil, nil, err.(error)
 }

@@ -8,5 +8,5 @@ type DownloaderMiddlewareInterface interface {
 	SetClient(*http.Client)
 	SetRequest(*http.Request)
 	GetResponse(*http.Response)
-	Error(error)
+	Error(*http.Client, error)
 }

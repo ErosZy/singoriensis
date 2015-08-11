@@ -30,6 +30,6 @@ func (self *DefaultDownloaderMiddleware) GetResponse(res *http.Response) {
 	//fmt.Println(res)
 }
 
-func (self *DefaultDownloaderMiddleware) Error(err error) {
+func (self *DefaultDownloaderMiddleware) Error(client *http.Client, err error) {
 	fmt.Println(err.Error())
 }
