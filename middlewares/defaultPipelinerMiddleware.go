@@ -7,6 +7,7 @@ func NewDefaultPipelinerMiddleware() *DefaultPipelinerMiddleware {
 	return &DefaultPipelinerMiddleware{}
 }
 
-func (self *DefaultPipelinerMiddleware) GetItems(items ...interface{}) {
-	fmt.Println(items)
+func (self *DefaultPipelinerMiddleware) GetItems(stop *bool, items ...interface{}) {
+	*stop = true
+	fmt.Println(*stop, items)
 }

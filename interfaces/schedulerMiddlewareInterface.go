@@ -5,6 +5,6 @@ import (
 )
 
 type SchedulerMiddlewareInterface interface {
-	ElementItemIn(common.ElementItem)
-	ElementItemOut(common.ElementItem)
+	ElementItemIn(*bool, common.ElementItem)
+	ElementItemOut(*bool, common.ElementItem)
 }

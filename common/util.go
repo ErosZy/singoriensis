@@ -8,6 +8,9 @@ import (
 func CallObjMethod(objs interface{}, name string, params []interface{}) {
 	in := make([]reflect.Value, 0)
 
+	stop := false
+	in = append(in, reflect.ValueOf(&stop))
+
 	for _, v := range params {
 		in = append(in, reflect.ValueOf(v))
 	}
@@ -20,6 +23,10 @@ func CallObjMethod(objs interface{}, name string, params []interface{}) {
 		method := item.MethodByName(name)
 		if method.IsValid() {
 			method.Call(in)
+		}
+
+		if stop {
+			break
 		}
 	}
 }

@@ -5,8 +5,8 @@ import (
 )
 
 type DownloaderMiddlewareInterface interface {
-	SetClient(*http.Client)
-	SetRequest(*http.Request)
-	GetResponse(*http.Response)
-	Error(*http.Client, error)
+	SetClient(*bool, *http.Client)
+	SetRequest(*bool, *http.Request)
+	GetResponse(*bool, *http.Response)
+	Error(*bool, *http.Client, error)
 }
