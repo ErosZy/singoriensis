@@ -47,13 +47,13 @@ func (self *Scheduler) CallMiddlewareMethod(name string, params []interface{}) {
 func (self *Scheduler) AddElementItem(elem common.ElementItem, isForce bool) {
 	self.mutex.Lock()
 
-	self.CallMiddlewareMethod("ElementItemIn", []interface{}{elem})
+	self.CallMiddlewareMethod("ElementItemIn", []interface{}{&elem})
 
 	if self.urlHeap == nil {
 		panic("scheduler's urlHeap is empty.")
 	}
 
-	if isForce || !self.urlHeap.Contain(elem) {
+	if isForce || (&elem != nil && !self.urlHeap.Contain(elem)) {
 		self.elems.PushBack(elem)
 	}
 
