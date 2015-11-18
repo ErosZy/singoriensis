@@ -4,6 +4,7 @@ import (
 	"singoriensis/common"
 	"singoriensis/interfaces"
 	"time"
+	"fmt"
 )
 
 var retryMaxCount int
@@ -82,6 +83,7 @@ func (self *Downloader) Start(threadNum int) {
 					req, res, err := self.requests[index].Init(urlStr).Request()
 
 					if err != nil {
+						fmt.Println(err)
 						if elemItem.FaildCount < retryMaxCount {
 							elemItem.FaildCount += 1
 							self.scheduler.AddElementItem(elemItem, true)
@@ -98,8 +100,7 @@ func (self *Downloader) Start(threadNum int) {
 							self.scheduler.AddElementItem(v, false)
 						}
 
-						if /*len(items) > 0*/
-						true {
+						if len(items) > 0 {
 							self.pipeliner.CallMiddlewareMethod("GetItems", items)
 						}
 					}
