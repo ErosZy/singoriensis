@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+	sErr "singoriensis/error"
 )
 
 type DefaultDownloaderMiddleware struct {}
@@ -16,7 +17,7 @@ func (self *DefaultDownloaderMiddleware) SetClient(stop *bool, client *http.Clie
 	client.Timeout = 2 * time.Second
 }
 
-func (self *DefaultDownloaderMiddleware) SetRequest(stop *bool, req *http.Request) {
+func (self *DefaultDownloaderMiddleware) SetRequest(stop *bool, req *http.Request, err *sErr.RequestError) {
 	req.Header.Add("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1")
 	req.Header.Add("Accept", "text/html")
 	req.Header.Add("Host", "item.m.jd.com")
@@ -25,8 +26,8 @@ func (self *DefaultDownloaderMiddleware) SetRequest(stop *bool, req *http.Reques
 	req.Header.Add("Connection", "keep-alive")
 }
 
-func (self *DefaultDownloaderMiddleware) GetResponse(stop *bool, res *http.Response) {
-	//fmt.Println(res)
+func (self *DefaultDownloaderMiddleware) GetResponse(stop *bool, res *http.Response, err *sErr.ResponseError) {
+	err.Exist = true
 }
 
 func (self *DefaultDownloaderMiddleware) Error(stop *bool, client *http.Client, err error) {

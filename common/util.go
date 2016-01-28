@@ -12,7 +12,11 @@ func CallObjMethod(objs interface{}, name string, params []interface{}) {
 	in = append(in, reflect.ValueOf(&stop))
 
 	for _, v := range params {
-		in = append(in, reflect.ValueOf(v))
+		if v != nil {
+			in = append(in, reflect.ValueOf(v))
+		}else {
+			in = append(in, reflect.ValueOf(&v))
+		}
 	}
 
 	tmp := reflect.ValueOf(objs)

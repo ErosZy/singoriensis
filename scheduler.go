@@ -5,7 +5,6 @@ import (
 	"singoriensis/common"
 	"singoriensis/interfaces"
 	"sync"
-	"fmt"
 )
 
 type Scheduler struct {
@@ -54,7 +53,6 @@ func (self *Scheduler) AddElementItem(elem common.ElementItem, isForce bool) {
 		panic("scheduler's urlHeap is empty.")
 	}
 
-	fmt.Println(elem.UrlStr,self.urlHeap.Contain(elem))
 	if isForce || (elem.UrlStr != "" && !self.urlHeap.Contain(elem)) {
 		self.elems.PushBack(elem)
 	}
@@ -63,7 +61,7 @@ func (self *Scheduler) AddElementItem(elem common.ElementItem, isForce bool) {
 }
 
 func (self *Scheduler) ShiftElementItem() interface{} {
-	var elem interface{}
+	var elem common.ElementItem
 
 	self.mutex.Lock()
 

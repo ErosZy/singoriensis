@@ -26,6 +26,9 @@ func (process *MyProcess) Do(page *cm.Page) {
 	reader := strings.NewReader(bodyStr)
 	reqUrl := page.Req.URL
 
+	fmt.Println(reqUrl)
+
+
 	doc, _ := query.NewDocumentFromReader(reader)
 	/**------------------------------波奇的产品爬虫------------------------------**/
 		 if reqUrl.String() == "http://shop.boqii.com/" {
@@ -142,7 +145,7 @@ func main() {
 	pipeliner := sg.NewPipeliner()
 	pipeliner.RegisterMiddleware(mw.NewDefaultPipelinerMiddleware())
 
-	spider.SetThreadNum(runtime.NumCPU() * 2)
+	spider.SetThreadNum(1)
 	spider.SetDownloader(downloader)
 	spider.SetScheduler(scheduler)
 	spider.SetPipeliner(pipeliner)

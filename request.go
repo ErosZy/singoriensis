@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"net/url"
 	"singoriensis/interfaces"
-	"strconv"
 	"strings"
 	"time"
+	sErr "singoriensis/error"
 )
 
 type Request struct {
@@ -16,13 +16,9 @@ type Request struct {
 	delegate interfaces.DownloaderInterface
 }
 
-type RequestError struct {
-	statusCode int
-}
-
 func NewRequest(delegate interfaces.DownloaderInterface) *Request {
 	client := &http.Client{
-		Timeout: time.Duration(time.Millisecond * 500),
+		Timeout: time.Duration(time.Second * 10),
 	}
 
 	delegate.CallMiddlewareMethod("SetClient", []interface{}{client})
@@ -56,16 +52,26 @@ func (self *Request) Request() (*http.Request, *http.Response, error) {
 
 	req, reqError := http.NewRequest("GET", self.urlStr, body)
 
-	self.delegate.CallMiddlewareMethod("SetRequest", []interface{}{req})
-
 	if reqError == nil {
+		requestError := sErr.RequestError{-1, false}
+		self.delegate.CallMiddlewareMethod("SetRequest", []interface{}{req, &requestError})
+
+		if requestError.Exist {
+			err = requestError
+		}
+
 		res, resError := self.client.Do(req)
+
 		if resError == nil {
-			if res.StatusCode == 200 {
-				self.delegate.CallMiddlewareMethod("GetResponse", []interface{}{res})
+			responseError := sErr.ResponseError{false}
+			self.delegate.CallMiddlewareMethod("GetResponse", []interface{}{res, &responseError})
+
+			if responseError.Exist {
+				err = responseError
+			}else if res.StatusCode == 200 {
 				return req, res, nil
 			} else {
-				err = RequestError{res.StatusCode}
+				err = sErr.RequestError{res.StatusCode, true}
 			}
 		} else {
 			err = resError
@@ -77,8 +83,4 @@ func (self *Request) Request() (*http.Request, *http.Response, error) {
 	self.delegate.CallMiddlewareMethod("Error", []interface{}{self.client, err})
 
 	return nil, nil, err.(error)
-}
-
-func (err RequestError) Error() string {
-	return strings.Join([]string{"status code error:", strconv.Itoa(err.statusCode)}, " ")
 }
