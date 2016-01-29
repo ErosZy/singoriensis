@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 	sErr "singoriensis/error"
+	"singoriensis/common"
 )
 
 type DefaultDownloaderMiddleware struct {}
@@ -26,7 +27,7 @@ func (self *DefaultDownloaderMiddleware) SetRequest(stop *bool, req *http.Reques
 	req.Header.Add("Connection", "keep-alive")
 }
 
-func (self *DefaultDownloaderMiddleware) GetResponse(stop *bool, res *http.Response, err *sErr.ResponseError) {
+func (self *DefaultDownloaderMiddleware) GetResponse(stop *bool, page *common.Page, err *sErr.ResponseError) {
 	err.Exist = true
 }
 

@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 	sErr "singoriensis/error"
+	"singoriensis/common"
 )
 
 type Request struct {
@@ -34,7 +35,7 @@ func (self *Request) Init(urlStr string) *Request {
 	return self
 }
 
-func (self *Request) Request() (*http.Request, *http.Response, error) {
+func (self *Request) Request() (*common.Page, error) {
 	var err interface{} = nil
 	body := &strings.Reader{}
 
@@ -52,6 +53,8 @@ func (self *Request) Request() (*http.Request, *http.Response, error) {
 
 	req, reqError := http.NewRequest("GET", self.urlStr, body)
 
+	var page *common.Page = nil
+
 	if reqError == nil {
 		requestError := sErr.RequestError{-1, false}
 		self.delegate.CallMiddlewareMethod("SetRequest", []interface{}{req, &requestError})
@@ -64,12 +67,13 @@ func (self *Request) Request() (*http.Request, *http.Response, error) {
 
 		if resError == nil {
 			responseError := sErr.ResponseError{false}
-			self.delegate.CallMiddlewareMethod("GetResponse", []interface{}{res, &responseError})
+			page := common.NewPage(req, res)
+			self.delegate.CallMiddlewareMethod("GetResponse", []interface{}{page, &responseError})
 
 			if responseError.Exist {
 				err = responseError
 			}else if res.StatusCode == 200 {
-				return req, res, nil
+				return page, nil
 			} else {
 				err = sErr.RequestError{res.StatusCode, true}
 			}
@@ -82,5 +86,5 @@ func (self *Request) Request() (*http.Request, *http.Response, error) {
 
 	self.delegate.CallMiddlewareMethod("Error", []interface{}{self.client, err})
 
-	return nil, nil, err.(error)
+	return page, err.(error)
 }
