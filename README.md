@@ -4,8 +4,6 @@
 
 singoriensis是参考了scrapy而编写的golang版本简单易用且高效的spider library
 
----
-
 ### 概述
 
 singoriensis参考scrapy的架构，分成了downloader、scheduler、pipeliner三层，并添加了针对返回数据信息处理的process，其数据流如下：<br/>
@@ -61,3 +59,4 @@ singoriensis面向接口编程，这样你可以更简单的编写你自己的�
 6. pipelinerMiddlewareInterface : 存储中间件对象，可以按照顺序进行数据的存储，如log --> mysql --> elasticsearch
 7. processInterface ：内容解析处理，解析出需要的url及存储的内容
 8. urlHeapInterface : url冲重复过滤，你可以使用redis，也可以使用bloomfilter算法等对url进行重复过滤
+
