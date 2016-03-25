@@ -9,7 +9,7 @@ singoriensis是参考了scrapy而编写的golang版本简单易用且高效的sp
 ### 概述
 
 singoriensis参考scrapy的架构，分成了downloader、scheduler、pipeliner三层，并添加了针对返回数据信息处理的process，其数据流如下：<br/>
-![image](https://github.com/ErosZy/singoriensis/image.png)
+![image](https://github.com/ErosZy/singoriensis/blob/master/image.png)
 
 
 ### 开始
