@@ -30,8 +30,8 @@ singoriensis参考scrapy的架构，分成了downloader、scheduler、pipeliner�
     spider := sg.NewSpider("test", &MyProcess{})
     
     downloader := sg.NewDownloader()
-    downloader.SetSleepTime(2 * time.Second)
-    downloader.SetRetryMaxCount(0)
+    downloader.SetSleepTime(2 * time.Second) // 对每个go程的休眠时间
+    downloader.SetRetryMaxCount(0) // 设置最大失败重试次数
     downloader.RegisterMiddleware(mw.NewDefaultDownloaderMiddleware())
 
     scheduler := sg.NewScheduler()
@@ -41,10 +41,15 @@ singoriensis参考scrapy的架构，分成了downloader、scheduler、pipeliner�
     pipeliner := sg.NewPipeliner()
     pipeliner.RegisterMiddleware(mw.NewDefaultPipelinerMiddleware())
 
-    spider.SetThreadNum(1)
+    spider.SetThreadNum(1) // 设置下载go程数
     spider.SetDownloader(downloader)
     spider.SetScheduler(scheduler)
     spider.SetPipeliner(pipeliner)
+    
+    spider.AddUrl("http://www.baidu.com")
+    spider.AddUrl("http://www.sohu.com");
+    
+    spider.Run()
 ```
 
 ### 接口
