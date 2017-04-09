@@ -39,7 +39,6 @@ func (self Request) Init(urlStr string) interfaces.RequestInterface {
 func (self Request) Request() (*common.Page, error) {
 	var err interface{} = nil
 	body := &strings.Reader{}
-
 	values := url.Values{}
 
 	if len(self.params) > 0 {
@@ -52,9 +51,8 @@ func (self Request) Request() (*common.Page, error) {
 		body = strings.NewReader(values.Encode())
 	}
 
-	req, reqError := http.NewRequest("GET", self.urlStr, body)
-
 	var page *common.Page = nil
+	req, reqError := http.NewRequest("GET", self.urlStr, body)
 
 	if reqError == nil {
 		requestError := sErr.RequestError{-1, false}
