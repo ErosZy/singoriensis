@@ -33,6 +33,9 @@ singoriensis参考scrapy的架构，分成了downloader、scheduler、pipeliner�
     downloader.SetSleepTime(2 * time.Second) // 对每个go程的休眠时间
     downloader.SetRetryMaxCount(0) // 设置最大失败重试次数
     downloader.RegisterMiddleware(mw.NewDefaultDownloaderMiddleware())
+    
+    requests := []sg.interfaces.RequestInterface{sg.NewReuqest(downloader)}
+    downloader.SetRequests(requests)
 
     scheduler := sg.NewScheduler()
     scheduler.SetUrlHeap(sg.NewDefaultUrlHeap(50))
@@ -64,4 +67,5 @@ singoriensis面向接口编程，这样你可以更简单的编写你自己的�
 6. pipelinerMiddlewareInterface : 存储中间件对象，可以按照顺序进行数据的存储，如log --> mysql --> elasticsearch
 7. processInterface ：内容解析处理，解析出需要的url及存储的内容
 8. urlHeapInterface : url冲重复过滤，你可以使用redis，也可以使用bloomfilter算法等对url进行重复过滤
+9. requestInterface : 请求实体
 
