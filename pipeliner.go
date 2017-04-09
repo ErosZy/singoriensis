@@ -1,8 +1,8 @@
 package singoriensis
 
 import (
-	"singoriensis/common"
-	"singoriensis/interfaces"
+	"github.com/ErosZy/singoriensis/common"
+	"github.com/ErosZy/singoriensis/interfaces"
 )
 
 type Pipeliner struct {

@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-	sErr "singoriensis/error"
-	"singoriensis/common"
+
+	"github.com/ErosZy/singoriensis/common"
+	sErr "github.com/ErosZy/singoriensis/error"
 )
 
-type DefaultDownloaderMiddleware struct {}
+type DefaultDownloaderMiddleware struct{}
 
 func NewDefaultDownloaderMiddleware() *DefaultDownloaderMiddleware {
 	return &DefaultDownloaderMiddleware{}

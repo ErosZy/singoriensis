@@ -2,8 +2,9 @@ package interfaces
 
 import (
 	"net/http"
-	sErr "singoriensis/error"
-	"singoriensis/common"
+
+	"github.com/ErosZy/singoriensis/common"
+	sErr "github.com/ErosZy/singoriensis/error"
 )
 
 type DownloaderMiddlewareInterface interface {

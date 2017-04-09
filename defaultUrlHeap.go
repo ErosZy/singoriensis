@@ -5,7 +5,8 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"math/big"
-	"singoriensis/common"
+
+	"github.com/ErosZy/singoriensis/common"
 )
 
 type UrlHeap struct {

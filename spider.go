@@ -1,9 +1,10 @@
 package singoriensis
 
 import (
-	"singoriensis/common"
-	"singoriensis/interfaces"
 	"time"
+
+	"github.com/ErosZy/singoriensis/common"
+	"github.com/ErosZy/singoriensis/interfaces"
 )
 
 var Threads chan int
@@ -18,7 +19,7 @@ type Spider struct {
 	process    interfaces.ProcessInterface
 }
 
-func NewSpider(taskName string, process interfaces.ProcessInterface) *Spider{
+func NewSpider(taskName string, process interfaces.ProcessInterface) *Spider {
 	return &Spider{
 		threadNum: 1,
 		taskName:  taskName,
@@ -79,7 +80,7 @@ func (self *Spider) Run() {
 	self.downloader.SetScheduler(self.scheduler)
 	self.downloader.Start(num)
 
-	End:
+End:
 	for {
 		select {
 		case <-Threads:

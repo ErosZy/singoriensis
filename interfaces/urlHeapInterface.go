@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	"singoriensis/common"
+	"github.com/ErosZy/singoriensis/common"
 )
 
 type UrlHeapInterface interface {

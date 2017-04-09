@@ -1,8 +1,6 @@
 package interfaces
 
-import (
-	"singoriensis/common"
-)
+import "github.com/ErosZy/singoriensis/common"
 
 type SchedulerInterface interface {
 	GetElemCount() int

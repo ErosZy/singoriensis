@@ -3,11 +3,12 @@ package singoriensis
 import (
 	"net/http"
 	"net/url"
-	"singoriensis/interfaces"
 	"strings"
 	"time"
-	sErr "singoriensis/error"
-	"singoriensis/common"
+
+	"github.com/ErosZy/singoriensis/common"
+	sErr "github.com/ErosZy/singoriensis/error"
+	"github.com/ErosZy/singoriensis/interfaces"
 )
 
 type Request struct {
@@ -26,11 +27,11 @@ func NewRequest(delegate interfaces.DownloaderInterface) *Request {
 
 	return &Request{
 		delegate: delegate,
-		client: client,
+		client:   client,
 	}
 }
 
-func (self *Request) Init(urlStr string) *Request {
+func (self *Request) Init(urlStr string) interfaces.RequestInterface {
 	self.urlStr = urlStr
 	return self
 }
@@ -72,7 +73,7 @@ func (self *Request) Request() (*common.Page, error) {
 
 			if responseError.Exist {
 				err = responseError
-			}else if res.StatusCode == 200 {
+			} else if res.StatusCode == 200 {
 				return page, nil
 			} else {
 				err = sErr.RequestError{res.StatusCode, true}

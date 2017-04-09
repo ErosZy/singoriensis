@@ -1,16 +1,17 @@
 package singoriensis
 
 import (
-	"singoriensis/common"
-	"singoriensis/interfaces"
 	"time"
+
+	"github.com/ErosZy/singoriensis/common"
+	"github.com/ErosZy/singoriensis/interfaces"
 )
 
 var retryMaxCount int
 
 type Downloader struct {
 	sleepTime   time.Duration
-	requests    []*Request
+	requests    []interfaces.RequestInterface
 	scheduler   interfaces.SchedulerInterface
 	pipeliner   interfaces.PipelinerInterface
 	process     interfaces.ProcessInterface
@@ -61,7 +62,7 @@ func (self *Downloader) CallMiddlewareMethod(name string, params []interface{}) 
 }
 
 func (self *Downloader) Start(threadNum int) {
-	self.requests = make([]*Request, threadNum)
+	self.requests = make([]interfaces.RequestInterface, threadNum)
 
 	for i := 0; i < threadNum; i++ {
 		request := NewRequest(self)
@@ -74,13 +75,11 @@ func (self *Downloader) Start(threadNum int) {
 
 			for {
 				elem := self.scheduler.ShiftElementItem()
-
 				if elem != nil {
 					elemItem := elem.(common.ElementItem)
 					urlStr = elemItem.UrlStr
 
 					page, err := self.requests[index].Init(urlStr).Request()
-
 					if err != nil {
 						if elemItem.FaildCount < retryMaxCount {
 							elemItem.FaildCount += 1

@@ -2,9 +2,10 @@ package singoriensis
 
 import (
 	"container/list"
-	"singoriensis/common"
-	"singoriensis/interfaces"
 	"sync"
+
+	"github.com/ErosZy/singoriensis/common"
+	"github.com/ErosZy/singoriensis/interfaces"
 )
 
 type Scheduler struct {
@@ -14,7 +15,7 @@ type Scheduler struct {
 	middlewares []interfaces.SchedulerMiddlewareInterface
 }
 
-type SchedulerError struct {}
+type SchedulerError struct{}
 
 func NewScheduler() *Scheduler {
 	return &Scheduler{
@@ -39,7 +40,7 @@ func (self *Scheduler) RegisterMiddleware(mw interfaces.SchedulerMiddlewareInter
 func (self *Scheduler) CallMiddlewareMethod(name string, params []interface{}) {
 	if len(self.middlewares) != 0 {
 		common.CallObjMethod(self.middlewares, name, params)
-	}else {
+	} else {
 		panic("scheduler's middleware is empty.")
 	}
 }

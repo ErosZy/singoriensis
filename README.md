@@ -16,7 +16,7 @@ singoriensis参考scrapy的架构，分成了downloader、scheduler、pipeliner�
 ```golang
     import (
         //...
-        "singoriensis/common"
+        "github.com/ErosZy/singoriensis/common"
         //...
     )
     type MyProcess struct {}
