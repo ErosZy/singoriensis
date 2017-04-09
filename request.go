@@ -18,25 +18,25 @@ type Request struct {
 	delegate interfaces.DownloaderInterface
 }
 
-func NewRequest(delegate interfaces.DownloaderInterface) *Request {
+func NewRequest(delegate interfaces.DownloaderInterface) Request {
 	client := &http.Client{
 		Timeout: time.Duration(time.Second * 10),
 	}
 
 	delegate.CallMiddlewareMethod("SetClient", []interface{}{client})
 
-	return &Request{
+	return Request{
 		delegate: delegate,
 		client:   client,
 	}
 }
 
-func (self *Request) Init(urlStr string) interfaces.RequestInterface {
+func (self Request) Init(urlStr string) interfaces.RequestInterface {
 	self.urlStr = urlStr
 	return self
 }
 
-func (self *Request) Request() (*common.Page, error) {
+func (self Request) Request() (*common.Page, error) {
 	var err interface{} = nil
 	body := &strings.Reader{}
 

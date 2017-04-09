@@ -53,6 +53,10 @@ func (self *Downloader) SetRetryMaxCount(count int) {
 	retryMaxCount = count
 }
 
+func (self *Downloader) SetRequests(requests []interfaces.RequestInterface) {
+	self.requests = requests
+}
+
 func (self *Downloader) RegisterMiddleware(mw interfaces.DownloaderMiddlewareInterface) {
 	self.middlewares = append(self.middlewares, mw)
 }
@@ -62,11 +66,8 @@ func (self *Downloader) CallMiddlewareMethod(name string, params []interface{}) 
 }
 
 func (self *Downloader) Start(threadNum int) {
-	self.requests = make([]interfaces.RequestInterface, threadNum)
-
-	for i := 0; i < threadNum; i++ {
-		request := NewRequest(self)
-		self.requests[i] = request
+	if self.requests == nil {
+		panic("downloader should set requests")
 	}
 
 	for i := 0; i < threadNum; i++ {
